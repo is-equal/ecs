@@ -1,0 +1,11 @@
+.idea/
+.vscode/
+node_modules/
+lib/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store
+.parcel-cache

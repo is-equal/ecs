@@ -1,0 +1,20 @@
+{
+  "name": "playground",
+  "version": "0.0.0",
+  "private": true,
+  "browserslist": "chrome >= 25",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@equal/data-structures": "^0.0.0",
+    "@equal/ecs": "^0.0.0",
+    "raf": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/stats.js": "^0.17.0",
+    "core-js": "^3.21.0",
+    "parcel": "^2.3.1",
+    "stats.js": "^0.17.0"
+  }
+}

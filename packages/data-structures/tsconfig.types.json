@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "types.tsbuildinfo",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "declarationDir": "./lib/types"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/__tests__/**/*"]
+}

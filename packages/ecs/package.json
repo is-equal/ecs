@@ -1,0 +1,39 @@
+{
+  "name": "@equal/ecs",
+  "version": "0.0.0",
+  "type": "commonjs",
+  "main": "lib/esm/index.js",
+  "types": "lib/types/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    }
+  },
+  "author": "Matheus Albino",
+  "license": "MIT",
+  "homepage": "https://github.com/matheusalbino/ecs",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:matheusalbino/ecs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matheusalbino/ecs/issues"
+  },
+  "keywords": [
+    "ecs",
+    "entity-component-system",
+    "ecs-framework"
+  ],
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build": "yarn build:types && yarn build:esm && yarn build:cjs"
+  }
+}
