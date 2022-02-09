@@ -1,0 +1,16 @@
+{
+  "name": "benchmark",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node -r esm --expose-gc index.js"
+  },
+  "dependencies": {
+    "@equal/data-structures": "^0.0.0",
+    "@equal/ecs": "^0.0.0"
+  },
+  "devDependencies": {
+    "benchmarker-js": "^0.0.4",
+    "esm": "^3.2.25"
+  }
+}
