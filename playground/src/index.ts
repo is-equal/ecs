@@ -23,10 +23,10 @@ start();
 const rootTree = createTree<Entity>(-1, 'root');
 
 // Create all entities
-makeObject({ x: 0, y: 0, w: 256, h: 256 }, rootTree);
+makeObject({ x: 0, y: 0, width: 256, height: 256 }, rootTree);
 
 for (let i = 0; i < 1000; i++) {
-  makeObject({ x: 0, y: 0, w: 32, h: 32 }, rootTree, true);
+  makeObject({ x: 0, y: 0, width: 32, height: 32 }, rootTree, true);
 }
 
 function makeObject(

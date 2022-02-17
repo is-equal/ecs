@@ -68,7 +68,7 @@ world.registerSystem('Renderer', ['DirtyRenderer'], (entities, deltaTime) => {
 
     ctx.save();
     ctx.fillStyle = randomColor();
-    ctx.fillRect(transform.x, transform.y, transform.w, transform.h);
+    ctx.fillRect(transform.x, transform.y, transform.width, transform.height);
     ctx.restore();
   }
 

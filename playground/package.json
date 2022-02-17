@@ -2,14 +2,13 @@
   "name": "playground",
   "version": "0.0.0",
   "private": true,
-  "browserslist": "chrome >= 25",
+  "browserslist": "opera >= 12",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "parcel src/index.html"
   },
   "dependencies": {
     "@equal/data-structures": "^0.0.0",
-    "@equal/ecs": "^0.0.0",
-    "raf": "^3.4.1"
+    "@equal/ecs": "^0.0.0"
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.0",

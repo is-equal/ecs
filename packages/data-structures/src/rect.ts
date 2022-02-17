@@ -3,8 +3,8 @@ import { clampSize, isEmptySize, Size } from './size';
 
 export interface Rect extends Point, Size {}
 
-export function rect(w: number = 0, h: number = 0, x: number = 0, y: number = 0): Rect {
-  return { x, y, w, h };
+export function rect(width: number = 0, height: number = 0, x: number = 0, y: number = 0): Rect {
+  return { x, y, width, height };
 }
 
 export function containsPoint(rect: Rect, point: Point): boolean {
@@ -12,10 +12,10 @@ export function containsPoint(rect: Rect, point: Point): boolean {
     return false;
   }
 
-  const minX = Math.min(rect.x, rect.x + rect.w);
-  const maxX = Math.max(rect.x, rect.x + rect.w);
-  const minY = Math.min(rect.y, rect.y + rect.h);
-  const maxY = Math.max(rect.y, rect.y + rect.h);
+  const minX = Math.min(rect.x, rect.x + rect.width);
+  const maxX = Math.max(rect.x, rect.x + rect.width);
+  const minY = Math.min(rect.y, rect.y + rect.height);
+  const maxY = Math.max(rect.y, rect.y + rect.height);
 
   return point.x >= minX && point.x < maxX && point.y >= minY && point.y < maxY;
 }
@@ -27,7 +27,7 @@ export function containsRect(left: Rect, right: Rect): boolean {
 
   return (
     containsPoint(left, point(right.x, right.y)) &&
-    containsPoint(left, point(right.x + right.w, right.y + right.h))
+    containsPoint(left, point(right.x + right.width, right.y + right.height))
   );
 }
 
@@ -38,9 +38,9 @@ export function overlapsRect(left: Rect, right: Rect): boolean {
 
   return (
     containsPoint(left, point(right.x, right.y)) ||
-    containsPoint(left, point(right.x + right.w, right.y + right.h)) ||
+    containsPoint(left, point(right.x + right.width, right.y + right.height)) ||
     containsPoint(right, point(left.x, left.y)) ||
-    containsPoint(right, point(left.x + left.w, left.y + left.h))
+    containsPoint(right, point(left.x + left.width, left.y + left.height))
   );
 }
 
@@ -54,9 +54,9 @@ export function unionRect(left: Rect, right: Rect): Rect {
   }
 
   const minX = Math.min(left.x, right.x);
-  const maxX = Math.max(left.x + left.w, right.x + right.w);
+  const maxX = Math.max(left.x + left.width, right.x + right.width);
   const minY = Math.min(left.y, right.y);
-  const maxY = Math.max(left.y + left.h, right.y + right.h);
+  const maxY = Math.max(left.y + left.height, right.y + right.height);
 
   const w = Math.ceil(maxX - minX);
   const h = Math.ceil(maxY - minY);

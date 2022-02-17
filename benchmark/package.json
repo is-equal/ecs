@@ -3,14 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "test": "node -r esm --expose-gc index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "@equal/data-structures": "^0.0.0",
-    "@equal/ecs": "^0.0.0"
-  },
-  "devDependencies": {
-    "benchmarker-js": "^0.0.4",
-    "esm": "^3.2.25"
+    "@equal/ecs": "^0.0.0",
+    "ecsy": "^0.4.2"
   }
 }

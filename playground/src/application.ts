@@ -1,9 +1,9 @@
-// require('raf/polyfill');
 import { world } from '@equal/ecs';
 import Stats from 'stats.js';
 
 const stats = new Stats();
 stats.showPanel(0);
+
 const element = document.body.appendChild(stats.dom);
 element.style.marginTop = '64px';
 element.style.marginLeft = '64px';
@@ -40,7 +40,9 @@ function loop(timestamp: number): void {
   state.previousTime = timestamp;
 
   stats.begin();
+
   world.tick(deltaTime);
+
   stats.end();
 
   requestAnimationFrame(loop);
