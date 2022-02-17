@@ -1,4 +1,4 @@
-import { Component, System } from '../index';
+import type { Component, Query, System, TagComponent } from '../index';
 
 export interface Position extends Component {
   x: number;
@@ -14,9 +14,9 @@ export interface Texture extends Component {
   color: string;
 }
 
-export type Renderable = Component;
+export type Renderable = TagComponent;
 
-export const positionSystemQuery = ['Position', 'Size'];
+export const positionSystemQuery: Query = ['Position', 'Size'];
 
 export const positionSystem = jest.fn(function (): void {
   if (positionSystem.shouldThrow) {

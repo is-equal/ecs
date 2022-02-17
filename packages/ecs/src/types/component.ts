@@ -1,6 +1,6 @@
 import type { Entity } from './entity';
 
-export type ComponentType = `Component::${string}`;
+export type ComponentType = Readonly<string>;
 
 export interface Component {
   readonly type: ComponentType;
@@ -11,3 +11,5 @@ export interface TagComponent {
 }
 
 export type ComponentListener = (entity: Entity) => void;
+
+export type UnregisterComponentListener = (type: ComponentType) => void;

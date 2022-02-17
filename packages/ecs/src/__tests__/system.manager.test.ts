@@ -1,16 +1,14 @@
-import * as ComponentManager from '../managers/component.manager';
-import * as EntityManager from '../managers/entity.manager';
-import * as SystemManager from '../managers/system.manager';
+import { ComponentManager, EntityManager, SystemManager, QueryManager } from '../managers';
 import { type Position, positionSystem, positionSystemQuery, type Size } from './utils';
 import type { Entity } from '../types';
 
 describe('SystemManager', () => {
   const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
   const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-  const onAddComponent = jest.spyOn(ComponentManager, 'onAddComponent');
-  const onRemoveComponent = jest.spyOn(ComponentManager, 'onRemoveComponent');
-  const offAddComponent = jest.spyOn(ComponentManager, 'offAddComponent');
-  const offRemoveComponent = jest.spyOn(ComponentManager, 'offRemoveComponent');
+  const onAddedComponent = jest.spyOn(ComponentManager, 'onAddedComponent');
+  const onRemovedComponent = jest.spyOn(ComponentManager, 'onRemovedComponent');
+  const offAddedComponent = jest.spyOn(ComponentManager, 'offAddedComponent');
+  const offRemovedComponent = jest.spyOn(ComponentManager, 'offRemovedComponent');
 
   const entity: Entity = EntityManager.createEntity();
   const entity2: Entity = EntityManager.createEntity();
@@ -18,6 +16,12 @@ describe('SystemManager', () => {
   beforeAll(() => {
     ComponentManager.registerComponent<Position>('Position', { x: 0, y: 0 });
     ComponentManager.registerComponent<Size>('Size', { w: 0, h: 0 });
+  });
+
+  afterAll(() => {
+    ComponentManager.unregisterComponent('Position');
+    ComponentManager.unregisterComponent('Size');
+    EntityManager.destroyAllEntities();
   });
 
   test('.registerSystem(System)', () => {
@@ -29,10 +33,10 @@ describe('SystemManager', () => {
     SystemManager.registerSystem('Position', positionSystemQuery, positionSystem);
 
     expect(warn).not.toBeCalled();
-    expect(error).toBeCalledWith('System (Position) already registered');
+    expect(error).toBeCalledWith('registerSystem: System (Position) already registered');
 
-    expect(onAddComponent).toBeCalledTimes(1);
-    expect(onRemoveComponent).toBeCalledTimes(1);
+    expect(onAddedComponent).toBeCalledTimes(2);
+    expect(onRemovedComponent).toBeCalledTimes(2);
   });
 
   test('update entities when an entity have the requirements', () => {
@@ -42,23 +46,21 @@ describe('SystemManager', () => {
     ComponentManager.addComponent(entity2, 'Position');
     ComponentManager.addComponent(entity2, 'Size');
 
-    expect(SystemManager.getSystemEntities('Position')).toHaveLength(2);
+    expect(QueryManager.executeQueryFrom('Position').size).toEqual(2);
   });
 
   test('update entities when an entity is destroyed', () => {
     EntityManager.destroyEntity(entity);
 
-    expect(SystemManager.getSystemEntities('Position')).toHaveLength(1);
+    expect(QueryManager.executeQueryFrom('Position').size).toEqual(1);
   });
 
   test('should not execute if has no entities', () => {
     EntityManager.destroyEntity(entity2);
 
-    expect(SystemManager.getSystemEntities('Position')).toHaveLength(0);
+    expect(QueryManager.executeQueryFrom('Position').size).toEqual(0);
 
-    const systems = SystemManager.getSystems();
-
-    for (const system of systems) {
+    for (const system of SystemManager.getSystems()) {
       system.update(0.016);
     }
 
@@ -74,10 +76,9 @@ describe('SystemManager', () => {
     SystemManager.unregisterSystem('Position');
 
     expect(warn).not.toBeCalled();
-    expect(error).toHaveBeenLastCalledWith('System (Position) not registered');
+    expect(error).toHaveBeenLastCalledWith('unregisterSystem: System (Position) not registered');
 
-    expect(SystemManager.getSystemEntities('Position')).toHaveLength(0);
-    expect(offAddComponent).toBeCalledTimes(1);
-    expect(offRemoveComponent).toBeCalledTimes(1);
+    expect(offAddedComponent).toBeCalledTimes(2);
+    expect(offRemovedComponent).toBeCalledTimes(2);
   });
 });

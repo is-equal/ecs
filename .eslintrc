@@ -79,7 +79,7 @@
       {
         "selector": "variable",
         "types": ["boolean"],
-        "format": ["camelCase", "UPPER_CASE"],
+        "format": ["PascalCase", "UPPER_CASE"],
         "prefix": ["is", "should", "has", "can", "did", "will"],
         "leadingUnderscore": "allow",
         "trailingUnderscore": "allow"

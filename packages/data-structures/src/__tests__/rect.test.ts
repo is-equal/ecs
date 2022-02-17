@@ -22,10 +22,10 @@ describe('Rect', () => {
     r3 = rect(32, 32, 128, 128);
     r4 = rect(-32, -32, -128, -128);
 
-    expect(r1).toMatchObject({ x: 0, y: 0, w: 0, h: 0 });
-    expect(r2).toMatchObject({ x: 0, y: 0, w: 1280, h: 720 });
-    expect(r3).toMatchObject({ x: 128, y: 128, w: 32, h: 32 });
-    expect(r4).toMatchObject({ x: -128, y: -128, w: -32, h: -32 });
+    expect(r1).toMatchObject({ x: 0, y: 0, width: 0, height: 0 });
+    expect(r2).toMatchObject({ x: 0, y: 0, width: 1280, height: 720 });
+    expect(r3).toMatchObject({ x: 128, y: 128, width: 32, height: 32 });
+    expect(r4).toMatchObject({ x: -128, y: -128, width: -32, height: -32 });
   });
 
   describe('Rect Operations', () => {

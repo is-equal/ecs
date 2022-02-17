@@ -4,11 +4,14 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "playground"
+    "playground",
+    "benchmark"
   ],
   "scripts": {
     "test": "jest",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "benchmark": "lerna run start --scope=benchmark",
+    "playground": "lerna run start --scope=playground"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

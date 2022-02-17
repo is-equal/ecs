@@ -2,8 +2,8 @@ import { size, clampSize, isEmptySize } from '../';
 
 describe('Size', () => {
   test('size(number, number)', () => {
-    expect(size(0, 0)).toStrictEqual(expect.objectContaining({ w: 0, h: 0 }));
-    expect(size(10, -10)).toMatchObject({ w: 10, h: -10 });
+    expect(size(0, 0)).toStrictEqual(expect.objectContaining({ width: 0, height: 0 }));
+    expect(size(10, -10)).toMatchObject({ width: 10, height: -10 });
   });
 
   describe('Size Operations', () => {
@@ -12,7 +12,7 @@ describe('Size', () => {
       const min = size(0, 0);
       const max = size(1, 1);
 
-      expect(clampSize(value, min, max)).toMatchObject({ w: 1, h: 0 });
+      expect(clampSize(value, min, max)).toMatchObject({ width: 1, height: 0 });
     });
 
     test('isEmptySize(Size)', () => {

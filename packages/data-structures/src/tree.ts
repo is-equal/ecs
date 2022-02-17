@@ -33,7 +33,7 @@ const state: TreeState = {
 };
 
 export function createTree<T>(target: T, name?: string): MutableTree<T> {
-  const tree = Object.seal<MutableTree<T>>({
+  const tree: MutableTree<T> = {
     target,
     parent: undefined,
     previousSibling: undefined,
@@ -129,7 +129,7 @@ export function createTree<T>(target: T, name?: string): MutableTree<T> {
         (this.parent as MutableTree<T>).removeChild(this);
       }
     },
-  });
+  };
 
   if (name !== undefined) {
     state.trees.set(name, tree);
