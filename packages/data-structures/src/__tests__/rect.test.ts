@@ -3,7 +3,7 @@ import {
   containsPoint,
   containsRect,
   isEmptyRect,
-  overlapsRect,
+  intersectRect,
   rect,
   point,
   unionRect,
@@ -52,13 +52,13 @@ describe('Rect', () => {
       expect(containsRect(r1, r4)).toEqual(false);
 
       expect(containsRect(r2, r1)).toEqual(false);
-      expect(containsRect(r2, r2)).toEqual(false);
+      expect(containsRect(r2, r2)).toEqual(true);
       expect(containsRect(r2, r3)).toEqual(true);
       expect(containsRect(r2, r4)).toEqual(false);
 
       expect(containsRect(r3, r1)).toEqual(false);
       expect(containsRect(r3, r2)).toEqual(false);
-      expect(containsRect(r3, r3)).toEqual(false);
+      expect(containsRect(r3, r3)).toEqual(true);
       expect(containsRect(r3, r4)).toEqual(false);
 
       expect(containsRect(r4, r1)).toEqual(false);
@@ -67,26 +67,26 @@ describe('Rect', () => {
       expect(containsRect(r4, r4)).toEqual(false);
     });
 
-    test('overlapsRect(Rect, Rect)', () => {
-      expect(overlapsRect(r1, r1)).toEqual(false);
-      expect(overlapsRect(r1, r3)).toEqual(false);
-      expect(overlapsRect(r1, r3)).toEqual(false);
-      expect(overlapsRect(r1, r4)).toEqual(false);
+    test('intersectRect(Rect, Rect)', () => {
+      expect(intersectRect(r1, r1)).toEqual(false);
+      expect(intersectRect(r1, r3)).toEqual(false);
+      expect(intersectRect(r1, r3)).toEqual(false);
+      expect(intersectRect(r1, r4)).toEqual(false);
 
-      expect(overlapsRect(r2, r1)).toEqual(false);
-      expect(overlapsRect(r2, r2)).toEqual(true);
-      expect(overlapsRect(r2, r3)).toEqual(true);
-      expect(overlapsRect(r2, r4)).toEqual(false);
+      expect(intersectRect(r2, r1)).toEqual(false);
+      expect(intersectRect(r2, r2)).toEqual(true);
+      expect(intersectRect(r2, r3)).toEqual(true);
+      expect(intersectRect(r2, r4)).toEqual(false);
 
-      expect(overlapsRect(r3, r1)).toEqual(false);
-      expect(overlapsRect(r3, r2)).toEqual(true);
-      expect(overlapsRect(r3, r3)).toEqual(true);
-      expect(overlapsRect(r3, r4)).toEqual(false);
+      expect(intersectRect(r3, r1)).toEqual(false);
+      expect(intersectRect(r3, r2)).toEqual(true);
+      expect(intersectRect(r3, r3)).toEqual(true);
+      expect(intersectRect(r3, r4)).toEqual(false);
 
-      expect(overlapsRect(r4, r1)).toEqual(false);
-      expect(overlapsRect(r4, r3)).toEqual(false);
-      expect(overlapsRect(r4, r3)).toEqual(false);
-      expect(overlapsRect(r4, r4)).toEqual(false);
+      expect(intersectRect(r4, r1)).toEqual(false);
+      expect(intersectRect(r4, r3)).toEqual(false);
+      expect(intersectRect(r4, r3)).toEqual(false);
+      expect(intersectRect(r4, r4)).toEqual(false);
     });
 
     test('clampRect(Rect, Rect, Rect)', () => {

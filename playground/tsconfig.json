@@ -4,5 +4,7 @@
     "noEmit": true,
     "module": "CommonJS"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+  ]
 }

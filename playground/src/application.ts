@@ -1,12 +1,4 @@
 import { world } from '@equal/ecs';
-import Stats from 'stats.js';
-
-const stats = new Stats();
-stats.showPanel(0);
-
-const element = document.body.appendChild(stats.dom);
-element.style.marginTop = '64px';
-element.style.marginLeft = '64px';
 
 interface ApplicationState {
   processId: number;
@@ -29,6 +21,22 @@ export function stop(): void {
   state.processId = -1;
 }
 
+const fpsValues: number[] = [];
+
+async function updateFPS(fps: number): Promise<void> {
+  fpsValues.push(fps);
+
+  if (fpsValues.length > 100) {
+    fpsValues.shift();
+  }
+
+  const fpsAVG = (fpsValues.reduce((v, n) => v + n, 0) / fpsValues.length) | 0;
+  const deltaTimeAVG = String(1 / fpsAVG).slice(0, 5);
+
+  const debug = document.getElementById('debug')!;
+  debug.textContent = `FPS: ${fpsAVG} | Delta Time: ${deltaTimeAVG}`;
+}
+
 function loop(timestamp: number): void {
   // Example: 16.6666ms
   const elapsedTime = Math.max(0, timestamp - state.previousTime);
@@ -36,14 +44,11 @@ function loop(timestamp: number): void {
   const deltaTime = elapsedTime / 1000;
 
   // Example: 60.0
-  // state.fps = 1000 / elapsedTime;
+  state.fps = 1000 / elapsedTime;
+  void updateFPS(state.fps);
   state.previousTime = timestamp;
 
-  stats.begin();
-
   world.tick(deltaTime);
-
-  stats.end();
 
   requestAnimationFrame(loop);
 }

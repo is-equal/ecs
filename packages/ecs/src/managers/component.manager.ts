@@ -96,9 +96,11 @@ export function addComponent<T extends Component>(
     state.componentInstances[entity] = {};
   }
 
+  const componentDefaultValue = clone(state.typeIdDefaultValue[typeId]);
+
   state.componentInstances[entity]![typeId] = {
     type,
-    ...state.typeIdDefaultValue[typeId],
+    ...componentDefaultValue,
     ...value,
   };
 
@@ -163,8 +165,8 @@ export function getComponent<T extends Component>(
 export function getComponents<T extends Component[]>(
   entity: Entity,
   types: string[],
-): Array<T | undefined> {
-  return types.map((type) => getComponent(entity, type) as T | undefined);
+): Array<(T extends Array<infer U> ? U : never) | undefined> {
+  return types.map((type) => getComponent(entity, type));
 }
 
 export function hasComponent(entity: Entity, type: ComponentType): boolean {
@@ -311,4 +313,12 @@ export function offRemovedComponent(type: ComponentType, fn: ComponentListener):
   if (index > -1) {
     listeners.splice(index, 1);
   }
+}
+
+function clone(data: any): any {
+  // @ts-expect-error: some environments have the method `structuredClone` globally
+  return globalThis.structuredClone !== undefined
+    ? // @ts-expect-error: the same explanation
+      globalThis.structuredClone(data)
+    : JSON.parse(JSON.stringify(data));
 }

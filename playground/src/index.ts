@@ -1,49 +1,62 @@
 import 'core-js';
-import { world, type Entity } from '@equal/ecs';
-import { createTree, type MutableTree, type Rect } from '@equal/data-structures';
 import { start } from './application';
-import type { DirtyPosition, Transform } from './components';
+import { physic2DSystem } from './core/systems';
+import { startScene, gameScene, gameOverScene } from './scenes';
+import { viewport } from './core/config';
 
-// Browser Configuration
+// Configuration
+document.body.style.display = 'flex';
+document.body.style.alignItems = 'center';
+document.body.style.flexDirection = 'column';
+document.body.style.justifyContent = 'center';
+document.body.style.alignContent = 'center';
+
 const root = document.getElementById('root') as HTMLCanvasElement;
-// @ts-expect-error: injected
-globalThis.ctx = root.getContext('2d');
-// @ts-expect-error: injected
-globalThis.ctx.width = globalThis.ctx.canvas.width;
-// @ts-expect-error: injected
-globalThis.ctx.height = globalThis.ctx.canvas.height;
+root.width = viewport.width;
+root.height = viewport.height;
+root.style.width = viewport.width + 'px';
+root.style.height = viewport.height + 'px';
 
-// Register all components and systems
+// @ts-expect-error: only for test purpose
+global.ctx = root.getContext('2d')!;
+
+// Register components and systems
 import './register';
 
 // Start loop
 start();
 
-// Create a named tree
-const rootTree = createTree<Entity>(-1, 'root');
+// Start Game
+let scene: 'start' | 'game' | 'game-over' = 'start';
+startScene();
 
-// Create all entities
-makeObject({ x: 0, y: 0, width: 256, height: 256 }, rootTree);
-
-for (let i = 0; i < 1000; i++) {
-  makeObject({ x: 0, y: 0, width: 32, height: 32 }, rootTree, true);
-}
-
-function makeObject(
-  transform: Partial<Rect>,
-  rootTree: MutableTree<Entity>,
-  dirty: boolean = false,
-): void {
-  const entity = world.createEntity();
-  world.addComponent<Transform>(entity, 'Transform', transform);
-
-  if (dirty) {
-    world.addComponent<DirtyPosition>(entity, 'DirtyPosition');
+function pointerDown(event: any): void {
+  if (event.code === 'Space') {
+    if (scene === 'game') {
+      physic2DSystem.state.tap = true;
+    }
   }
-
-  // Create a tree
-  const entityTree = createTree<Entity>(entity);
-
-  // Append tree to root tree
-  rootTree.appendChild(entityTree);
 }
+
+function pointerUp(event: any): void {
+  if (event.code === 'Space') {
+    if (scene === 'start') {
+      scene = 'game';
+      gameScene((): void => {
+        gameOverScene();
+        scene = 'game-over';
+      });
+    } else if (scene === 'game') {
+      physic2DSystem.state.tap = false;
+    } else if (scene === 'game-over') {
+      physic2DSystem.state.tap = false;
+      startScene();
+      scene = 'start';
+    }
+  }
+}
+
+window.addEventListener('keydown', pointerDown);
+window.addEventListener('keyup', pointerUp);
+window.addEventListener('touchstart', pointerDown);
+window.addEventListener('touchend', pointerUp);

@@ -12,12 +12,12 @@ export function containsPoint(rect: Rect, point: Point): boolean {
     return false;
   }
 
-  const minX = Math.min(rect.x, rect.x + rect.width);
-  const maxX = Math.max(rect.x, rect.x + rect.width);
-  const minY = Math.min(rect.y, rect.y + rect.height);
-  const maxY = Math.max(rect.y, rect.y + rect.height);
-
-  return point.x >= minX && point.x < maxX && point.y >= minY && point.y < maxY;
+  return (
+    point.x >= rect.x &&
+    point.x <= rect.x + rect.width &&
+    point.y >= rect.y &&
+    point.y <= rect.y + rect.height
+  );
 }
 
 export function containsRect(left: Rect, right: Rect): boolean {
@@ -27,21 +27,27 @@ export function containsRect(left: Rect, right: Rect): boolean {
 
   return (
     containsPoint(left, point(right.x, right.y)) &&
+    containsPoint(left, point(right.x + right.width, right.y)) &&
+    containsPoint(left, point(right.x, right.y + right.height)) &&
     containsPoint(left, point(right.x + right.width, right.y + right.height))
   );
 }
 
-export function overlapsRect(left: Rect, right: Rect): boolean {
+export function intersectRect(left: Rect, right: Rect): boolean {
   if (isEmptyRect(left) || isEmptyRect(right)) {
     return false;
   }
 
-  return (
-    containsPoint(left, point(right.x, right.y)) ||
-    containsPoint(left, point(right.x + right.width, right.y + right.height)) ||
-    containsPoint(right, point(left.x, left.y)) ||
-    containsPoint(right, point(left.x + left.width, left.y + left.height))
-  );
+  const leftCenter = point(left.x + left.width / 2, left.y + left.height / 2);
+  const rightCenter = point(right.x + right.width / 2, right.y + right.height / 2);
+
+  const diffX = Math.abs(leftCenter.x - rightCenter.x);
+  const diffY = Math.abs(leftCenter.y - rightCenter.y);
+
+  const dx = left.width / 2 + right.width / 2;
+  const dy = left.height / 2 + right.height / 2;
+
+  return diffX <= dx && diffY <= dy;
 }
 
 export function unionRect(left: Rect, right: Rect): Rect {
