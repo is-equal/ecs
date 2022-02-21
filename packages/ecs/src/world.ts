@@ -1,6 +1,11 @@
 import { SystemManager } from './managers';
 
-export { createEntity, destroyEntity, destroyAllEntities } from './managers/entity.manager';
+export {
+  createEntity,
+  destroyEntity,
+  destroyAllEntities,
+  onDestroy,
+} from './managers/entity.manager';
 
 export {
   registerComponent,

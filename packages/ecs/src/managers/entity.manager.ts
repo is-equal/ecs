@@ -6,12 +6,14 @@ interface EntityManagerState {
   nextId: number;
   availableId: Queue<Entity>;
   instances: Set<Entity>;
+  onDestroyListeners: Record<Entity, Array<() => void>>;
 }
 
 const state: EntityManagerState = {
   nextId: 0,
   availableId: new Queue(),
   instances: new Set(),
+  onDestroyListeners: {},
 };
 
 export function createEntity(): Entity {
@@ -27,6 +29,8 @@ export function destroyEntity(entity: Entity): void {
   state.availableId.enqueue(entity);
 
   ComponentManager.removeAllComponents(entity);
+
+  emitOnDestroyEntity(entity);
 }
 
 export function destroyAllEntities(): void {
@@ -34,8 +38,41 @@ export function destroyAllEntities(): void {
     state.instances.delete(entity);
 
     ComponentManager.removeAllComponents(entity);
+
+    emitOnDestroyEntity(entity);
   }
 
   state.nextId = 0;
   state.availableId.clear();
+}
+
+export function onDestroy(entity: Entity, fn: () => void): void {
+  let listeners = state.onDestroyListeners[entity];
+
+  if (listeners === undefined) {
+    listeners = state.onDestroyListeners[entity] = [];
+  }
+
+  listeners.push(fn);
+}
+
+/**
+ * @internal
+ */
+function emitOnDestroyEntity(entity: Entity): void {
+  const listeners = state.onDestroyListeners[entity];
+
+  if (listeners === undefined) {
+    return;
+  }
+
+  for (const listener of listeners) {
+    try {
+      listener();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  delete state.onDestroyListeners[entity];
 }
