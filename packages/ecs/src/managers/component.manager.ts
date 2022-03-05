@@ -162,11 +162,8 @@ export function getComponent<T extends Component>(
   return state.componentInstances[entity]?.[typeId] as T | undefined;
 }
 
-export function getComponents<T extends Component[]>(
-  entity: Entity,
-  types: string[],
-): Array<(T extends Array<infer U> ? U : never) | undefined> {
-  return types.map((type) => getComponent(entity, type));
+export function getComponents<T extends Component[]>(entity: Entity, types: string[]): Partial<T> {
+  return types.map((type) => getComponent(entity, type)) as Partial<T>;
 }
 
 export function hasComponent(entity: Entity, type: ComponentType): boolean {

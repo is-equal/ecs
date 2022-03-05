@@ -78,11 +78,14 @@
       },
       {
         "selector": "variable",
+        "modifiers": ["const"],
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": "variable",
         "types": ["boolean"],
-        "format": ["PascalCase", "UPPER_CASE"],
-        "prefix": ["is", "should", "has", "can", "did", "will"],
-        "leadingUnderscore": "allow",
-        "trailingUnderscore": "allow"
+        "format": ["PascalCase"],
+        "prefix": ["is", "should", "has", "can", "did", "will"]
       },
       {
         "selector": "enumMember",

@@ -1,4 +1,4 @@
-import type { Component, Query, System, TagComponent } from '../index';
+import type { Component, Query, SystemUpdate, TagComponent } from '../index';
 
 export interface Position extends Component {
   x: number;
@@ -22,6 +22,6 @@ export const positionSystem = jest.fn(function (): void {
   if (positionSystem.shouldThrow) {
     throw new Error('system error');
   }
-}) as jest.Mock & System & { shouldThrow: boolean };
+}) as jest.Mock & SystemUpdate & { shouldThrow: boolean };
 
 positionSystem.shouldThrow = false;

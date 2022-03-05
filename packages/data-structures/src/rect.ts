@@ -14,9 +14,9 @@ export function containsPoint(rect: Rect, point: Point): boolean {
 
   return (
     point.x >= rect.x &&
-    point.x <= rect.x + rect.width &&
+    point.x < rect.x + rect.width &&
     point.y >= rect.y &&
-    point.y <= rect.y + rect.height
+    point.y < rect.y + rect.height
   );
 }
 
@@ -47,7 +47,7 @@ export function intersectRect(left: Rect, right: Rect): boolean {
   const dx = left.width / 2 + right.width / 2;
   const dy = left.height / 2 + right.height / 2;
 
-  return diffX <= dx && diffY <= dy;
+  return diffX < dx && diffY < dy;
 }
 
 export function unionRect(left: Rect, right: Rect): Rect {

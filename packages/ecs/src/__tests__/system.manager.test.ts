@@ -61,7 +61,7 @@ describe('SystemManager', () => {
     expect(QueryManager.executeQueryFrom('Position').size).toEqual(0);
 
     for (const system of SystemManager.getSystems()) {
-      system.update(0.016);
+      system.update(0.016, 0);
     }
 
     expect(positionSystem).not.toBeCalled();

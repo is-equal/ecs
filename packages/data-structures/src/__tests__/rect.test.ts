@@ -52,13 +52,13 @@ describe('Rect', () => {
       expect(containsRect(r1, r4)).toEqual(false);
 
       expect(containsRect(r2, r1)).toEqual(false);
-      expect(containsRect(r2, r2)).toEqual(true);
+      expect(containsRect(r2, r2)).toEqual(false);
       expect(containsRect(r2, r3)).toEqual(true);
       expect(containsRect(r2, r4)).toEqual(false);
 
       expect(containsRect(r3, r1)).toEqual(false);
       expect(containsRect(r3, r2)).toEqual(false);
-      expect(containsRect(r3, r3)).toEqual(true);
+      expect(containsRect(r3, r3)).toEqual(false);
       expect(containsRect(r3, r4)).toEqual(false);
 
       expect(containsRect(r4, r1)).toEqual(false);
