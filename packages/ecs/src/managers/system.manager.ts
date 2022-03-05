@@ -1,4 +1,4 @@
-import { type Query, type System, type SystemInstance, type SystemType } from '../types';
+import { type Query, type SystemUpdate, type SystemInstance, type SystemType } from '../types';
 import * as QueryManager from './query.manager';
 
 interface SystemManagerState {
@@ -9,7 +9,7 @@ const state: SystemManagerState = {
   instances: new Map(),
 };
 
-export function registerSystem(type: string, query: Query, update: System): void {
+export function registerSystem(type: string, query: Query, update: SystemUpdate): void {
   if (state.instances.has(type)) {
     console.error(`registerSystem: System (${type}) already registered`);
 
@@ -19,14 +19,14 @@ export function registerSystem(type: string, query: Query, update: System): void
   QueryManager.registerQuery(type, query);
 
   state.instances.set(type, {
-    update(deltaTime: number): void {
+    update(deltaTime, timestamp): void {
       const entities = QueryManager.executeQueryFrom(type);
 
       if (entities.size === 0) {
         return;
       }
 
-      update(entities, deltaTime);
+      update(entities, deltaTime, timestamp);
     },
   });
 }

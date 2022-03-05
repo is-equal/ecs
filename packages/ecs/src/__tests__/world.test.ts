@@ -42,13 +42,13 @@ describe('World', () => {
   });
 
   test('.tick(DeltaTime)', () => {
-    world.tick(0.016);
+    world.tick(0.016, 0);
 
     expect(warn).not.toBeCalled();
     expect(error).not.toBeCalled();
 
     positionSystem.shouldThrow = true;
-    world.tick(0.016);
+    world.tick(0.016, 0);
     positionSystem.shouldThrow = false;
 
     expect(warn).not.toBeCalled();
@@ -57,7 +57,7 @@ describe('World', () => {
     const entities = new Set([0, 3]);
     expect(QueryManager.executeQueryFrom('Position')).toEqual(entities);
     expect(positionSystem).toBeCalledTimes(2);
-    expect(positionSystem).toHaveBeenNthCalledWith(1, entities, 0.016);
-    expect(positionSystem).toHaveBeenNthCalledWith(2, entities, 0.016);
+    expect(positionSystem).toHaveBeenNthCalledWith(1, entities, 0.016, 0);
+    expect(positionSystem).toHaveBeenNthCalledWith(2, entities, 0.016, 0);
   });
 });

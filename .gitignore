@@ -1,11 +1,19 @@
+# IDE & Editor
 .idea/
 .vscode/
+
+# Dependencies
 node_modules/
+
+# Test
+coverage/
+
+# Build
 lib/
 dist/
 build/
-coverage/
 *.tsbuildinfo
+
+# Misc
 *.log
 .DS_Store
-.parcel-cache
