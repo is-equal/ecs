@@ -1,6 +1,6 @@
 import { world } from '@equal/ecs';
 import { getCollisionBounds } from '../../helpers';
-import { transaction } from './helpers';
+import { runInContext } from './helpers';
 import type { BoxCollider2D, Camera, Tilemap, Transform } from '../../components';
 import type { GameWorldContext } from '../../../setup';
 import type { ReadonlyQuadTree } from '../../structures/quad-tree';
@@ -13,7 +13,7 @@ export function debugStats(context: GameWorldContext): void {
     return;
   }
 
-  transaction(() => {
+  runInContext(() => {
     ctx.fillStyle = '#00FF00';
     ctx.font = 'bold 24px sans-serif';
     ctx.textBaseline = 'top';
@@ -30,7 +30,7 @@ export function debugCamera(context: GameWorldContext, camera: Camera): void {
     return;
   }
 
-  transaction(() => {
+  runInContext(() => {
     ctx.strokeStyle = '#0000FF';
 
     ctx.strokeRect(camera.bounds.x, camera.bounds.y, camera.bounds.width, camera.bounds.height);
@@ -50,7 +50,8 @@ export function debugCollision(context: GameWorldContext): void {
 
       if (tilemap !== undefined) {
         for (const levelId in tilemap.levels) {
-          debugQuadTree(tilemap.levels[levelId]!.staticCollisions);
+          debugQuadTree(tilemap.levels[levelId].staticCollisions);
+          debugQuadTree(tilemap.levels[levelId].dynamicCollisions, '#FF00FF');
         }
       }
     }
@@ -67,7 +68,7 @@ export function debugCollision(context: GameWorldContext): void {
       if (transform !== undefined && boxCollider !== undefined) {
         const bounds = getCollisionBounds(transform, boxCollider);
 
-        transaction(() => {
+        runInContext(() => {
           ctx.strokeStyle = '#FFAA00';
 
           ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -77,12 +78,15 @@ export function debugCollision(context: GameWorldContext): void {
   }
 }
 
-function debugQuadTree(quadtree: ReadonlyQuadTree | undefined): void {
+function debugQuadTree(
+  quadtree: ReadonlyQuadTree | undefined,
+  nodeColor: string = '#FFFF00',
+): void {
   if (quadtree === undefined) {
     return;
   }
 
-  transaction(() => {
+  runInContext(() => {
     ctx.strokeStyle = '#FFFFFF';
 
     ctx.strokeRect(
@@ -94,7 +98,7 @@ function debugQuadTree(quadtree: ReadonlyQuadTree | undefined): void {
   });
 
   if (!quadtree.isSubdivided()) {
-    return debugQuadTreeNodes(quadtree.getNodes());
+    return debugQuadTreeNodes(quadtree.getNodes(), nodeColor);
   }
 
   debugQuadTree(quadtree.getTopLeft());
@@ -103,9 +107,9 @@ function debugQuadTree(quadtree: ReadonlyQuadTree | undefined): void {
   debugQuadTree(quadtree.getBottomLeft());
 }
 
-function debugQuadTreeNodes(nodes: ReadonlyArray<Readonly<Rect>>): void {
-  transaction(() => {
-    ctx.strokeStyle = '#FFFF00';
+function debugQuadTreeNodes(nodes: ReadonlyArray<Readonly<Rect>>, color: string): void {
+  runInContext(() => {
+    ctx.strokeStyle = color;
 
     for (const node of nodes) {
       ctx.strokeRect(node.x, node.y, node.width, node.height);

@@ -3,7 +3,7 @@ import { Transform } from '../../components';
 
 declare const ctx: CanvasRenderingContext2D;
 
-export function transaction(fn: () => void): void {
+export function runInContext(fn: () => void): void {
   ctx.save();
 
   fn();

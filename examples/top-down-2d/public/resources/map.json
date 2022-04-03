@@ -9,7 +9,7 @@
 		"url": "https://ldtk.io"
 	},
 	"jsonVersion": "0.9.3",
-	"nextUid": 15,
+	"nextUid": 25,
 	"worldLayout": "Free",
 	"worldGridWidth": 256,
 	"worldGridHeight": 256,
@@ -127,7 +127,7 @@
 		}
 	], "entities": [
 		{
-			"identifier": "Entity",
+			"identifier": "Dead_Body",
 			"uid": 9,
 			"tags": [],
 			"width": 16,
@@ -147,16 +147,96 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
+			"pivotX": 1,
 			"pivotY": 0,
 			"fieldDefs": [
 				{
-					"identifier": "Interactive",
-					"__type": "Bool",
-					"uid": 12,
-					"type": "F_Bool",
+					"identifier": "x",
+					"__type": "Int",
+					"uid": 18,
+					"type": "F_Int",
 					"isArray": false,
 					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": 0,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "y",
+					"__type": "Int",
+					"uid": 19,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": 0,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "width",
+					"__type": "Int",
+					"uid": 20,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": 0,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "height",
+					"__type": "Int",
+					"uid": 21,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorAlwaysShow": false,
+					"editorCutLongValues": true,
+					"min": 0,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null
+				},
+				{
+					"identifier": "tileset",
+					"__type": "FilePath",
+					"uid": 22,
+					"type": "F_Path",
+					"isArray": false,
+					"canBeNull": true,
 					"arrayMinLength": null,
 					"arrayMaxLength": null,
 					"editorDisplayMode": "Hidden",
@@ -167,10 +247,7 @@
 					"max": null,
 					"regex": null,
 					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ false ]
-					},
+					"defaultOverride": null,
 					"textLanguageMode": null
 				}
 			]
@@ -241,15 +318,48 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "Entity",
-							"__grid": [8,6],
-							"__pivot": [0,0],
+							"__identifier": "Dead_Body",
+							"__grid": [7,6],
+							"__pivot": [1,0],
 							"__tile": null,
 							"width": 16,
 							"height": 16,
 							"defUid": 9,
 							"px": [128,96],
-							"fieldInstances": [{ "__identifier": "Interactive", "__value": false, "__type": "Bool", "defUid": 12, "realEditorValues": [] }]
+							"fieldInstances": [
+								{ "__identifier": "x", "__value": 0, "__type": "Int", "defUid": 18, "realEditorValues": [] },
+								{
+									"__identifier": "y",
+									"__value": 8,
+									"__type": "Int",
+									"defUid": 19,
+									"realEditorValues": [{ "id": "V_Int", "params": [8] }]
+								},
+								{
+									"__identifier": "width",
+									"__value": 32,
+									"__type": "Int",
+									"defUid": 20,
+									"realEditorValues": [{ "id": "V_Int", "params": [32] }]
+								},
+								{
+									"__identifier": "height",
+									"__value": 32,
+									"__type": "Int",
+									"defUid": 21,
+									"realEditorValues": [{ "id": "V_Int", "params": [32] }]
+								},
+								{
+									"__identifier": "tileset",
+									"__value": "tilesets/TopDown_by_deepnight.png",
+									"__type": "FilePath",
+									"defUid": 22,
+									"realEditorValues": [{
+										"id": "V_String",
+										"params": ["tilesets/TopDown_by_deepnight.png"]
+									}]
+								}
+							]
 						}
 					]
 				},
@@ -268,7 +378,7 @@
 					"layerDefUid": 13,
 					"pxOffsetX": 0,
 					"pxOffsetY": 0,
-					"visible": true,
+					"visible": false,
 					"optionalRules": [],
 					"intGrid": [],
 					"intGridCsv": [],
