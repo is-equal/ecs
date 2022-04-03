@@ -2,13 +2,15 @@ import { intersectRect, isEmptyRect, rect, type Rect } from '@equal/data-structu
 
 export type ReadonlyQuadTree = Omit<QuadTree, 'insert' | 'clear' | 'setBounds'>;
 
-export class QuadTree {
+type QuadTreeNode<T> = Rect & { data?: T };
+
+export class QuadTree<Data = unknown> {
   private static readonly maxElements = 4;
   private static readonly maxDepth = 8;
 
   private subdivided: boolean = false;
 
-  private nodes: Rect[] = [];
+  private nodes: Array<QuadTreeNode<Data>> = [];
 
   private topLeft: QuadTree | undefined;
   private topRight: QuadTree | undefined;
@@ -47,7 +49,7 @@ export class QuadTree {
     return this.bottomLeft;
   }
 
-  public insert(node: Rect): boolean {
+  public insert(node: QuadTreeNode<Data>): boolean {
     if (!intersectRect(this.bounds, node)) {
       return false;
     }
@@ -69,11 +71,20 @@ export class QuadTree {
       this.subdivide();
     }
 
+    if (
+      this.topLeft === undefined ||
+      this.topRight === undefined ||
+      this.bottomLeft === undefined ||
+      this.bottomRight === undefined
+    ) {
+      throw new Error('invalid QuadTree');
+    }
+
     return (
-      this.topLeft!.insert(node) ||
-      this.topRight!.insert(node) ||
-      this.bottomLeft!.insert(node) ||
-      this.bottomRight!.insert(node)
+      this.topLeft.insert(node) ||
+      this.topRight.insert(node) ||
+      this.bottomLeft.insert(node) ||
+      this.bottomRight.insert(node)
     );
   }
 
@@ -90,7 +101,11 @@ export class QuadTree {
     );
 
     while (this.nodes.length > 0) {
-      const node = this.nodes.pop()!;
+      const node = this.nodes.pop();
+
+      if (node === undefined) {
+        throw new Error('invalid QuadTree');
+      }
 
       void (
         this.topLeft.insert(node) ||
@@ -104,17 +119,26 @@ export class QuadTree {
     this.subdivided = true;
   }
 
-  public query(area: Rect): boolean {
+  public queryBoolean(area: Rect): boolean {
     if (!intersectRect(this.bounds, area)) {
       return false;
     }
 
     if (this.subdivided) {
+      if (
+        this.topLeft === undefined ||
+        this.topRight === undefined ||
+        this.bottomLeft === undefined ||
+        this.bottomRight === undefined
+      ) {
+        throw new Error('invalid QuadTree');
+      }
+
       return (
-        this.topLeft!.query(area) ||
-        this.topRight!.query(area) ||
-        this.bottomLeft!.query(area) ||
-        this.bottomRight!.query(area)
+        this.topLeft.queryBoolean(area) ||
+        this.topRight.queryBoolean(area) ||
+        this.bottomLeft.queryBoolean(area) ||
+        this.bottomRight.queryBoolean(area)
       );
     }
 
@@ -125,6 +149,34 @@ export class QuadTree {
     }
 
     return false;
+  }
+
+  public query(area: Rect): Data | undefined {
+    if (!intersectRect(this.bounds, area)) {
+      return;
+    }
+
+    if (this.subdivided) {
+      if (
+        this.topLeft === undefined ||
+        this.topRight === undefined ||
+        this.bottomLeft === undefined ||
+        this.bottomRight === undefined
+      ) {
+        throw new Error('invalid QuadTree');
+      }
+
+      return (this.topLeft.query(area) ||
+        this.topRight.query(area) ||
+        this.bottomLeft.query(area) ||
+        this.bottomRight.query(area)) as Data;
+    }
+
+    for (const node of this.nodes) {
+      if (intersectRect(area, node)) {
+        return node.data;
+      }
+    }
   }
 
   public clear(): void {

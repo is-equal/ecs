@@ -51,7 +51,7 @@ declare interface LDTKEntityInstance {
     __identifier: string;
     __value: unknown;
     __type: string;
-  }>
+  }>;
 }
 
 declare interface LDTKTileInstance {

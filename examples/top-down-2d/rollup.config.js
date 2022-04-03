@@ -7,6 +7,7 @@ import html from '@rollup/plugin-html';
 import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-typescript2';
+import serve from 'rollup-plugin-serve';
 
 export default defineConfig({
   input: 'src/main.ts',
@@ -26,5 +27,10 @@ export default defineConfig({
     commonjs(),
     postcss({ extract: true }),
     html(),
+    serve({
+      open: true,
+      port: 80,
+      contentBase: ['dist', 'public'],
+    }),
   ],
 });

@@ -1,5 +1,13 @@
 import { world } from '@equal/ecs';
-import { point, rect, size, unionRect } from '@equal/data-structures';
+import {
+  type Point,
+  point,
+  type Rect,
+  rect,
+  type Size,
+  size,
+  unionRect,
+} from '@equal/data-structures';
 import { QuadTree } from './quad-tree';
 import type {
   SpriteRenderer,
@@ -27,6 +35,8 @@ export function loadTilemap(tilemap: LDTKWorld): void {
     const mapLevel: TilemapLevel = {
       bounds: mapLevelBounds,
       staticCollisions: new QuadTree(mapLevelBounds),
+      interactives: new QuadTree(mapLevelBounds),
+      dynamicCollisions: new QuadTree(mapLevelBounds),
     };
 
     for (let i = level.layerInstances.length - 1; i >= 0; i--) {
@@ -38,9 +48,9 @@ export function loadTilemap(tilemap: LDTKWorld): void {
 
       if (layer.__type === 'IntGrid') {
         for (let i = 0; i < layer.intGridCsv.length; i++) {
-          const item = layer.intGridCsv[i]!;
+          const item = layer.intGridCsv[i];
 
-          if (item === 0) {
+          if (item === undefined || item === 0) {
             continue;
           }
 
@@ -59,14 +69,64 @@ export function loadTilemap(tilemap: LDTKWorld): void {
 
       if (layer.__type === 'Entities') {
         for (const entityInstance of layer.entityInstances) {
+          const entity = world.createEntity();
+
           const position = point(
             entityInstance.px[0] + mapLevelBounds.x,
             entityInstance.px[1] + mapLevelBounds.y,
           );
 
-          mapLevel.staticCollisions.insert(
-            rect(layer.__gridSize, layer.__gridSize, position.x, position.y),
+          const data = entityInstance.fieldInstances.reduce(
+            (result, field) => {
+              if (field.__identifier === 'x') {
+                result.x = field.__value as number;
+              } else if (field.__identifier === 'y') {
+                result.y = field.__value as number;
+              } else if (field.__identifier === 'width') {
+                result.width = field.__value as number;
+              } else if (field.__identifier === 'height') {
+                result.height = field.__value as number;
+              } else if (field.__identifier === 'tileset') {
+                result.tileset = field.__value as string;
+              }
+
+              return result;
+            },
+            {
+              ...rect(layer.__gridSize, layer.__gridSize),
+              tileset: undefined,
+            } as Rect & {
+              tileset: string | undefined;
+            },
           );
+
+          world.addComponent<Transform>(entity, 'Transform', {
+            position,
+            size: size(data.width, data.height),
+          });
+
+          if (data.tileset !== undefined) {
+            const sprite = new Image();
+            sprite.src = `resources/${data.tileset}`;
+
+            const [pivotX, pivotY] = entityInstance.__pivot;
+
+            world.addComponent<SpriteRenderer>(entity, 'SpriteRenderer', {
+              sprite,
+              pivot: getPivot(point(pivotX, pivotY), data),
+              crop: rect(
+                data.width,
+                data.height,
+                data.x * layer.__gridSize,
+                data.y * layer.__gridSize,
+              ),
+            });
+          }
+
+          const entityBounds = rect(layer.__gridSize, layer.__gridSize, position.x, position.y);
+
+          mapLevel.interactives.insert({ ...entityBounds, data: entity });
+          mapLevel.dynamicCollisions.insert(entityBounds);
         }
 
         continue;
@@ -126,4 +186,14 @@ function loadTilesets(tilemap: LDTKWorld): Record<string, string> {
     }),
     {},
   );
+}
+
+function getPivot(pivot: Point, size: Size): Point {
+  if (pivot.x === 1 && pivot.y === 0) {
+    return point(size.width / 2, 0);
+  } else if (pivot.x === 1 && pivot.y === 1) {
+    return point(size.width / 2, size.width / 2);
+  }
+
+  return point();
 }

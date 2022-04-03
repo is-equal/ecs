@@ -1,8 +1,9 @@
 import type { Component } from '@equal/ecs';
-import type { Color, Rect } from '@equal/data-structures';
+import type { Color, Point, Rect } from '@equal/data-structures';
 
 export interface SpriteRenderer extends Component {
-  sprite: HTMLImageElement | undefined;
+  sprite: HTMLImageElement;
+  pivot: Point;
   crop: Rect | undefined;
   transparentColor: string | Color | undefined;
   flip: 'x' | 'y' | 'both' | undefined;

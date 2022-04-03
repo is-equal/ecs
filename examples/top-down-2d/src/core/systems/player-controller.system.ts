@@ -25,7 +25,7 @@ export const enum PlayerDirection {
 
 interface PlayerControllerSystemState {
   keyPressed: {
-    count: number;
+    use: boolean;
     moveUp: boolean;
     moveDown: boolean;
     moveLeft: boolean;
@@ -35,7 +35,7 @@ interface PlayerControllerSystemState {
 
 const state: PlayerControllerSystemState = {
   keyPressed: {
-    count: 0,
+    use: false,
     moveUp: false,
     moveDown: false,
     moveLeft: false,
@@ -77,11 +77,22 @@ export const PlayerControllerSystemUpdate: SystemUpdate = (
       continue;
     }
 
-    const directions = applyInputActions(controller, transform);
-
+    controller.lastState = controller.state;
     const spriteAnimation = world.getComponent<SpriteAnimation>(entity, 'SpriteAnimation');
 
-    controller.lastState = controller.state;
+    if (state.keyPressed.use) {
+      controller.state = PlayerState.Idle;
+
+      if (spriteAnimation !== undefined) {
+        spriteAnimation.paused = true;
+      }
+
+      checkInteraction(tilemap, { transform, boxCollider, controller });
+
+      continue;
+    }
+
+    const directions = applyInputActions(controller, transform);
 
     if (directions === PlayerDirection.None) {
       controller.state = PlayerState.Idle;
@@ -90,6 +101,7 @@ export const PlayerControllerSystemUpdate: SystemUpdate = (
         spriteAnimation.paused = true;
       }
     } else {
+      controller.direction = directions;
       controller.state = PlayerState.Walking;
 
       if (spriteAnimation !== undefined) {
@@ -129,6 +141,51 @@ function applyControllerThrottling(
   controller.previousTime = timestamp;
 
   return false;
+}
+
+function checkInteraction(
+  tilemap: Tilemap,
+  options: { transform: Transform; boxCollider: BoxCollider2D; controller: PlayerController },
+): void {
+  const { transform, boxCollider, controller } = options;
+
+  const bounds = getCollisionBounds(transform, boxCollider);
+
+  if (hasDirection(controller.direction, PlayerDirection.North)) {
+    bounds.y -= transform.size.height;
+  }
+
+  if (hasDirection(controller.direction, PlayerDirection.South)) {
+    bounds.y += transform.size.height;
+  }
+
+  if (hasDirection(controller.direction, PlayerDirection.West)) {
+    bounds.x -= transform.size.width;
+  }
+
+  if (hasDirection(controller.direction, PlayerDirection.East)) {
+    bounds.x += transform.size.width;
+  }
+
+  if (!intersectRect(tilemap.bounds, bounds)) {
+    return;
+  }
+
+  for (const levelId in tilemap.levels) {
+    const level = tilemap.levels[levelId];
+
+    if (level === undefined) {
+      continue;
+    }
+
+    const entity = level.interactives.query(bounds);
+
+    if (entity !== undefined) {
+      console.log('Interacting with: ', entity);
+
+      return;
+    }
+  }
 }
 
 function applyInputActions(controller: PlayerController, transform: Transform): number {
@@ -202,9 +259,17 @@ function hasCollision(tilemap: Tilemap, bounds: Rect): boolean {
   }
 
   for (const levelId in tilemap.levels) {
-    const level = tilemap.levels[levelId]!;
+    const level = tilemap.levels[levelId];
 
-    if (level.staticCollisions.query(bounds)) {
+    if (level === undefined) {
+      continue;
+    }
+
+    if (level.staticCollisions.queryBoolean(bounds)) {
+      return true;
+    }
+
+    if (level.dynamicCollisions.queryBoolean(bounds)) {
       return true;
     }
   }
@@ -220,34 +285,30 @@ export function hasDirection(directions: number, direction: number): boolean {
 
 function setupInputEvents(state: PlayerControllerSystemState): void {
   window.addEventListener('keydown', (event) => {
-    if (event.code === 'ArrowUp' && !state.keyPressed.moveUp) {
+    if (event.code === 'KeyE' && !state.keyPressed.use) {
+      state.keyPressed.use = true;
+    } else if (event.code === 'ArrowUp' && !state.keyPressed.moveUp) {
       state.keyPressed.moveUp = true;
-      state.keyPressed.count += 1;
     } else if (event.code === 'ArrowDown' && !state.keyPressed.moveDown) {
       state.keyPressed.moveDown = true;
-      state.keyPressed.count += 1;
     } else if (event.code === 'ArrowLeft' && !state.keyPressed.moveLeft) {
       state.keyPressed.moveLeft = true;
-      state.keyPressed.count += 1;
     } else if (event.code === 'ArrowRight' && !state.keyPressed.moveRight) {
       state.keyPressed.moveRight = true;
-      state.keyPressed.count += 1;
     }
   });
 
   window.addEventListener('keyup', (event) => {
-    if (event.code === 'ArrowUp') {
+    if (event.code === 'KeyE') {
+      state.keyPressed.use = false;
+    } else if (event.code === 'ArrowUp') {
       state.keyPressed.moveUp = false;
-      state.keyPressed.count -= 1;
     } else if (event.code === 'ArrowDown') {
       state.keyPressed.moveDown = false;
-      state.keyPressed.count -= 1;
     } else if (event.code === 'ArrowLeft') {
       state.keyPressed.moveLeft = false;
-      state.keyPressed.count -= 1;
     } else if (event.code === 'ArrowRight') {
       state.keyPressed.moveRight = false;
-      state.keyPressed.count -= 1;
     }
   });
 }

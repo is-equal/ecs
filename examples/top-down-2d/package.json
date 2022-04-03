@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "rollup -c -w"
+    "start": "rollup -c -w",
+    "serve": "node server"
   },
   "dependencies": {
     "@equal/data-structures": "^0.0.0",
