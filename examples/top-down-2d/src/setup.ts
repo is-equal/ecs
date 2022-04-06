@@ -97,7 +97,7 @@ export function register(): void {
 
   // Sprite
   world.registerComponent<SpriteRenderer>('SpriteRenderer', {
-    sprite: undefined,
+    sprite: new Image(),
     pivot: point(),
     flip: undefined,
     crop: undefined,
