@@ -10,8 +10,8 @@ configure();
 // Register Components & Systems
 register();
 
-// Start loop
-start();
-
 // Scene
 createGameScene();
+
+// Start loop
+start();

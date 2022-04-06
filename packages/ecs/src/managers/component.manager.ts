@@ -312,10 +312,6 @@ export function offRemovedComponent(type: ComponentType, fn: ComponentListener):
   }
 }
 
-function clone(data: any): any {
-  // @ts-expect-error: some environments have the method `structuredClone` globally
-  return globalThis.structuredClone !== undefined
-    ? // @ts-expect-error: the same explanation
-      globalThis.structuredClone(data)
-    : JSON.parse(JSON.stringify(data));
+function clone<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
 }
