@@ -4,13 +4,13 @@
   "private": true,
   "workspaces": [
     "examples/*",
-    "packages/*"
+    "packages/*",
+    "benches"
   ],
   "scripts": {
     "test": "jest",
     "build": "lerna run build",
-    "benchmark": "lerna run start --scope=benchmark",
-    "playground": "lerna run start --scope=playground"
+    "bench": "lerna run start --scope=benches"
   },
   "devDependencies": {
     "@parcel/transformer-inline-string": "2.3.2",

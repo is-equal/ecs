@@ -1,7 +1,6 @@
 {
   "name": "@equal/data-structures",
   "version": "0.0.0",
-  "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "sideEffects": false,
