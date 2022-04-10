@@ -1,5 +1,4 @@
-/* eslint-disable */
-const {world}  = require('@equal/ecs');
+const { world } = require('@equal/ecs');
 
 module.exports = {
   name: 'Packed 5',
