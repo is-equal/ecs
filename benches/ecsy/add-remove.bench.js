@@ -1,5 +1,4 @@
-/* eslint-disable */
-const {Component, System, Types, World, Not} = require("ecsy");
+const { Component, System, Types, World, Not } = require('ecsy');
 
 module.exports = {
   name: 'Add Remove',
@@ -7,15 +6,13 @@ module.exports = {
     context.world = new World();
 
     context.world
-        .registerComponent(A)
-        .registerComponent(B)
-        .registerSystem(AddB)
-        .registerSystem(RemoveB);
+      .registerComponent(A)
+      .registerComponent(B)
+      .registerSystem(AddB)
+      .registerSystem(RemoveB);
 
     for (let i = 0; i < 1000; i++) {
-      context.world
-        .createEntity()
-        .addComponent(A);
+      context.world.createEntity().addComponent(A);
     }
   },
   measure(context) {
